@@ -1,7 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Category } from './entities/category.entity';
-// import { CreateCategoryDto } from './dto/create-category.dto';
-// import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CreateCategoryDto } from './dto/create-category.dto';
 
 @Injectable()
 export class CategoryService {
@@ -10,23 +9,22 @@ export class CategoryService {
     private categoriesRepository: typeof Category,
   ) {}
 
-  // create(createCategoryDto: CreateCategoryDto) {
-  //   return 'This action adds a new category';
-  // }
-
-  findAll() {
-    return `This action returns all category`;
+  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+    const category = await this.categoriesRepository.create(createCategoryDto);
+    return category;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findAll(): Promise<Category[]> {
+    return this.categoriesRepository.findAll();
   }
 
-  // update(id: number, updateCategoryDto: UpdateCategoryDto) {
-  //   return `This action updates a #${id} category`;
-  // }
+  async findOne(id: string): Promise<Category> {
+    const category = await this.categoriesRepository.findByPk(id);
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+    if (!category) {
+      throw new NotFoundException(`Category with ID ${id} not found`);
+    }
+
+    return category;
   }
 }

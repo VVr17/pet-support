@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-// import { CreateUserDto } from './dto/create-user.dto';
-// import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -10,27 +10,50 @@ export class UserService {
     private usersRepository: typeof User,
   ) {}
 
-  // create(createUserDto: CreateUserDto) {
-  //   return 'This action adds a new user';
-  // }
-
-  async findAll(): Promise<User[]> {
-    return this.usersRepository.findAll<User>();
+  async create(createUserDto: CreateUserDto) {
+    const newUser = await this.usersRepository.create(createUserDto);
+    return newUser;
   }
 
-  // findAll() {
-  //   return `This action returns all user`;
-  // }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(email: string) {
+    return await this.usersRepository.findOne({
+      where: { email },
+    });
   }
 
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
+  async findById(id: string) {
+    return await this.usersRepository.findByPk(id);
+  }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async update(updateUserDto: UpdateUserDto, id: string) {
+    return await this.usersRepository.update(updateUserDto, {
+      where: { id },
+    });
+  }
+
+  async remove(id: string) {
+    return await this.usersRepository.destroy({
+      where: { id },
+    });
+  }
+
+  async getUserNotices(id: string) {
+    return `get notice with id ${id}`;
+  }
+
+  async getUserFavoriteNotices(id: string) {
+    return ` get favorite with id ${id}`;
+  }
+
+  async addToFavorites(userId: string, noticeId: string) {
+    return ` add to favorite ${userId} ${noticeId}`;
+  }
+
+  async removeFromFavorites(userId: string, noticeId: string) {
+    return `remove from favorite ${userId} ${noticeId}`;
+  }
+
+  async getUserPets(id: string) {
+    return ` get user's pets with id ${id}`;
   }
 }

@@ -1,4 +1,13 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  Model,
+  Table,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
+import { Category } from '../../category/entities/category.entity';
+import { User } from '../../user/entities/user.entity';
 
 @Table({ tableName: 'Notices' })
 export class Notice extends Model<Notice> {
@@ -12,9 +21,6 @@ export class Notice extends Model<Notice> {
 
   @Column
   title: string;
-
-  @Column
-  owner: string;
 
   @Column
   photoURL: string;
@@ -40,6 +46,19 @@ export class Notice extends Model<Notice> {
   @Column(DataType.INTEGER)
   price: number;
 
-  @Column
+  // One-to-many: Category -> Notice
+  @ForeignKey(() => Category)
+  @Column({ field: 'Category_id', type: DataType.UUID })
   categoryId: string;
+
+  @BelongsTo(() => Category, { foreignKey: 'categoryId' })
+  category: Category;
+
+  // One-to-many: User -> Notice
+  @ForeignKey(() => User)
+  @Column({ field: 'Owner_id', type: DataType.UUID })
+  ownerId: string;
+
+  @BelongsTo(() => User)
+  owner: User;
 }

@@ -1,7 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Pet } from './entities/pet.entity';
-// import { CreatePetDto } from './dto/create-pet.dto';
-// import { UpdatePetDto } from './dto/update-pet.dto';
+import { CreatePetDto } from './dto/create-pet.dto';
+import { UpdatePetDto } from './dto/update-pet.dto';
 
 @Injectable()
 export class PetService {
@@ -10,23 +10,42 @@ export class PetService {
     private petsRepository: typeof Pet,
   ) {}
 
-  // create(createPetDto: CreatePetDto) {
-  //   return 'This action adds a new pet';
-  // }
-
-  findAll() {
-    return `This action returns all pet`;
+  // Promise<Pet>
+  async create(createPetDto: CreatePetDto, userId: string): Promise<Pet> {
+    console.log('userId', userId);
+    const newPet = await this.petsRepository.create(createPetDto);
+    return newPet;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} pet`;
+  async update(id: string, updatePetDto: UpdatePetDto): Promise<Pet> {
+    const petToUpdate = await this.petsRepository.findByPk(id);
+
+    if (!petToUpdate) {
+      throw new NotFoundException('Notice not found');
+    }
+
+    await petToUpdate.update(updatePetDto);
+
+    return petToUpdate;
   }
 
-  // update(id: number, updatePetDto: UpdatePetDto) {
-  //   return `This action updates a #${id} pet`;
-  // }
+  async removeOne(petId: string, userId: string): Promise<void> {
+    console.log('userId', userId);
+    const petToDelete = await this.petsRepository.findByPk(petId);
 
-  remove(id: number) {
-    return `This action removes a #${id} pet`;
+    if (!petToDelete) {
+      throw new NotFoundException(`Notice with ID ${petId} not found`);
+    }
+
+    await this.petsRepository.destroy({
+      where: { id: petId },
+    });
+
+    return;
+  }
+
+  async removeMany(petIds: string[]): Promise<void> {
+    console.log(petIds);
+    // await this.petsRepository.destroy({ where });
   }
 }

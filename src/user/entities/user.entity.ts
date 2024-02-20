@@ -1,4 +1,13 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  HasMany,
+  Model,
+  Table,
+  BelongsToMany,
+} from 'sequelize-typescript';
+import { Notice } from '../../notice/entities/notice.entity';
+import { Pet } from '../../pet/entities/pet.entity';
 
 @Table({ tableName: 'Users' })
 export class User extends Model<User> {
@@ -34,18 +43,23 @@ export class User extends Model<User> {
   @Column
   photoURL: string;
 
-  @Column(DataType.ARRAY(DataType.UUID))
-  pets: string[];
-
-  @Column(DataType.ARRAY(DataType.UUID))
-  notices: string[];
-
-  @Column(DataType.ARRAY(DataType.UUID))
-  favoriteNotices: string[];
-
   @Column(DataType.BOOLEAN)
   emailVerified: boolean;
 
   @Column
   resetPasswordToken: string;
+
+  @HasMany(() => Pet)
+  pets: Pet[];
+
+  @HasMany(() => Notice)
+  notices: Notice[];
+
+  @BelongsToMany(() => Notice, {
+    through: 'Liked',
+    foreignKey: 'noticeId',
+    otherKey: 'userId',
+    as: 'User',
+  })
+  likedNotices: Notice[];
 }

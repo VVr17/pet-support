@@ -22,8 +22,7 @@ export const databaseProviders = [
       });
 
       sequelize.addModels([User, Notice, Pet, Category]);
-      await sequelize.sync();
-
+      await sequelize.sync({ alter: true }); // Creates a table if it doesn't exist and adds what was changed
       return sequelize;
     },
   },

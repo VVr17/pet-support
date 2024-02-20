@@ -1,4 +1,12 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
+  BelongsTo,
+} from 'sequelize-typescript';
+import { User } from '../../user/entities/user.entity';
 
 @Table({ tableName: 'Pets' })
 export class Pet extends Model<Pet> {
@@ -14,9 +22,6 @@ export class Pet extends Model<Pet> {
   name: string;
 
   @Column
-  ownerId: string;
-
-  @Column
   birthDate: string;
 
   @Column
@@ -27,4 +32,12 @@ export class Pet extends Model<Pet> {
 
   @Column
   photoURL: string;
+
+  // One-to-many: User -> Pet
+  @ForeignKey(() => User)
+  @Column({ field: 'Owner_id', type: DataType.UUID })
+  ownerId: string;
+
+  @BelongsTo(() => User)
+  owner: User;
 }

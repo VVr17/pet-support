@@ -8,6 +8,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { CreateUserDto } from '../user/dto/create-user.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @ApiTags('Auth') // Swagger tag for API
 @Controller('auth')
@@ -16,7 +17,7 @@ export class AuthController {
 
   @ApiCreatedResponse({
     description: 'User has been successfully signed up',
-    // type: User,
+    type: User,
   })
   @ApiBadRequestResponse({ description: 'Bad request' })
   @Post('signup')
