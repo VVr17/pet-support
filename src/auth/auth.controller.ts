@@ -1,5 +1,3 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -7,8 +5,12 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { CreateUserDto } from '../user/dto/create-user.dto';
-import { User } from 'src/user/entities/user.entity';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+
+import { AuthService } from './auth.service';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { User } from 'src/users/entities/users.entity';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @ApiTags('Auth') // Swagger tag for API
 @Controller('auth')
@@ -42,10 +44,9 @@ export class AuthController {
       required: ['email', 'password'],
     },
   })
-  // @UseGuards(LocalAuthGuard)
-  //@Request() req: AuthenticatedRequest
-  @Post('signin')
-  async signin() {
-    return await this.authService.signin();
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  async logIn(@Request() req: AuthenticatedRequest) {
+    return this.authService.login(req.user);
   }
 }

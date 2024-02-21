@@ -1,10 +1,10 @@
 import * as dotenv from 'dotenv';
 import { Sequelize } from 'sequelize-typescript';
 
-import { Category } from 'src/category/entities/category.entity';
-import { Notice } from 'src/notice/entities/notice.entity';
-import { User } from 'src/user/entities/user.entity';
-import { Pet } from 'src/pet/entities/pet.entity';
+import { Category } from 'src/categories/entities/categories.entity';
+import { Notice } from 'src/notices/entities/notices.entity';
+import { User } from 'src/users/entities/users.entity';
+import { Pet } from 'src/pets/entities/pets.entity';
 
 dotenv.config();
 

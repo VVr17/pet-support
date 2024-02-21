@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { NoticeModule } from './notice/notice.module';
-import { PetModule } from './pet/pet.module';
-import { CategoryModule } from './category/category.module';
+import { UserModule } from './users/users.module';
+import { NoticeModule } from './notices/notices.module';
+import { PetModule } from './pets/pets.module';
+import { CategoryModule } from './categories/categories.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
