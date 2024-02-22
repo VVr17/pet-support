@@ -47,11 +47,7 @@ export class NoticesController {
     @Body() createNoticeDto: CreateNoticeDto,
     @Request() req: AuthenticatedRequest,
   ) {
-    const notice = await this.noticesService.create(
-      createNoticeDto,
-      req.user.id,
-    );
-    return { message: 'New notice successfully created', data: notice };
+    return await this.noticesService.create(createNoticeDto, req.user.id);
   }
 
   @ApiOkResponse({ type: [Notice] })
@@ -59,19 +55,12 @@ export class NoticesController {
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
   @Get()
-  async getNotices(
+  async findNotices(
     @Query('category') category: string = null,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ) {
-    const response = await this.noticesService.findAll(category, +page, +limit);
-
-    return {
-      message: 'Success',
-      data: response,
-      // total: response.total,
-      // data: response.notices,
-    };
+    return await this.noticesService.findAll(category, +page, +limit);
   }
 
   @ApiOkResponse({
@@ -82,9 +71,8 @@ export class NoticesController {
     description: 'Not found',
   })
   @Get(':id')
-  async getNoticeById(@Param('id') id: string) {
-    const notice = await this.noticesService.findOne(id);
-    return { message: 'Success', data: notice };
+  async findNoticeById(@Param('id') id: string) {
+    return await this.noticesService.findById(id);
   }
 
   @ApiOkResponse({
@@ -105,8 +93,7 @@ export class NoticesController {
     @Param('id') id: string,
     @Body() updateNoticeDto: UpdateNoticeDto,
   ) {
-    const updatedNotice = await this.noticesService.update(id, updateNoticeDto);
-    return { message: 'Notice successfully updated', data: updatedNotice };
+    return await this.noticesService.update(id, updateNoticeDto);
   }
 
   @ApiOkResponse({
@@ -123,11 +110,7 @@ export class NoticesController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, IsMyNoticeGuard)
   @Delete(':id')
-  async removeNotice(
-    @Param('id') id: string,
-    @Request() req: AuthenticatedRequest,
-  ) {
-    await this.noticesService.removeOne(id, req.user.id);
-    return { message: `Notice ${id} has been deleted successfully` };
+  async removeNotice(@Param('id') id: string) {
+    return await this.noticesService.removeOne(id);
   }
 }

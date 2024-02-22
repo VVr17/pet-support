@@ -22,6 +22,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Notice } from 'src/notices/entities/notices.entity';
 import { Pet } from 'src/pets/entities/pets.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { NoticesService } from 'src/notices/notices.service';
+import { PetsService } from 'src/pets/pets.service';
 
 @ApiTags('Users') // Swagger tag for API
 @UseGuards(JwtAuthGuard)
@@ -29,18 +31,18 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 @ApiUnauthorizedResponse({ description: 'Unauthorized' })
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly noticesService: NoticesService,
+    private readonly petsService: PetsService,
+  ) {}
 
   // Get current user data
   @ApiOkResponse({ type: User })
   @Get('me')
-  async getUser(@Request() req: any) {
+  async findUser(@Request() req: AuthenticatedRequest) {
     const user = await this.usersService.findById(req.user.id);
-
-    return {
-      message: 'User profile has been successfully found',
-      data: user,
-    };
+    return { data: user };
   }
 
   // update user data
@@ -54,17 +56,11 @@ export class UsersController {
     @Request() req: AuthenticatedRequest,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    const user = await this.usersService.update(updateUserDto, req.user.id);
-
-    return {
-      message: 'User profile has been successfully updated',
-      data: user,
-    };
+    return await this.usersService.update(updateUserDto, req.user.id);
   }
 
   // Delete user account
   @ApiOkResponse({ description: 'User profile has been successfully deleted' })
-  // @UseInterceptors(DeleteUserDataInterceptor) // Apply the interceptor here
   @Delete('me')
   async removeUser(@Request() req: AuthenticatedRequest) {
     return await this.usersService.remove(req.user.id);
@@ -73,22 +69,15 @@ export class UsersController {
   // Get user's own notices
   @ApiOkResponse({ type: [Notice] })
   @Get('me/notices')
-  async getUserNotices(@Request() req: AuthenticatedRequest) {
-    return await this.usersService.getUserNotices(req.user.id);
+  async findUserNotices(@Request() req: AuthenticatedRequest) {
+    return await this.noticesService.findNoticesByUserId(req.user.id);
   }
 
   // Get user's favorite notices
   @ApiOkResponse({ type: [Notice] })
   @Get('me/favorites')
-  async getUserFavorites(@Request() req: AuthenticatedRequest) {
-    const favoriteNotices = await this.usersService.getUserFavoriteNotices(
-      req.user.id,
-    );
-
-    return {
-      message: 'Success',
-      data: favoriteNotices,
-    };
+  async findUserFavorites(@Request() req: AuthenticatedRequest) {
+    return await this.usersService.findUserFavoriteNotices(req.user.id);
   }
 
   // Add notices to favorites
@@ -98,16 +87,7 @@ export class UsersController {
     @Request() req: AuthenticatedRequest,
     @Param('id') id: string,
   ) {
-    const userId = 'c7f32532-8096-4997-9755-dab3b80c43d0';
-    const updatedNotices = await this.usersService.addToFavorites(
-      req.user.id,
-      id,
-    );
-
-    return {
-      message: `Notice ${id} added to favorites for user ${userId}`, // req.user._id
-      data: updatedNotices,
-    };
+    return await this.usersService.addToFavorites(req.user.id, id);
   }
 
   // Remove notices from favorites
@@ -117,27 +97,13 @@ export class UsersController {
     @Request() req: AuthenticatedRequest,
     @Param('id') id: string,
   ) {
-    const userId = 'c7f32532-8096-4997-9755-dab3b80c43d0';
-    const updatedNotices = await this.usersService.removeFromFavorites(
-      req.user.id,
-      id,
-    );
-
-    return {
-      message: `Notice ${id} removed from favorites for user ${userId}`, // req.user._id
-      data: updatedNotices,
-    };
+    return await this.usersService.removeFromFavorites(req.user.id, id);
   }
 
-  // Get user's favorite notices
+  // Get user's pets
   @ApiOkResponse({ type: [Pet] })
   @Get('me/pets')
-  async getUserPets(@Request() req: AuthenticatedRequest) {
-    const pets = await this.usersService.getUserPets(req.user.id);
-
-    return {
-      message: 'Success',
-      data: pets,
-    };
+  async findUserPets(@Request() req: AuthenticatedRequest) {
+    return await this.petsService.findPetsByUserId(req.user.id);
   }
 }

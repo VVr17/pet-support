@@ -1,18 +1,18 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { PetsService } from '../pets.service';
 
 // Guard to check whether pet to be dealt with belongs to current user
 @Injectable()
 export class IsMyPetGuard implements CanActivate {
-  constructor() {}
+  constructor(private readonly petsService: PetsService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const { id } = request.params;
-    console.log(id);
-    // const { pets } = request.user;
 
-    // TODO: Add
-    // return pets.includes(id);
-    return true;
+    const response = await this.petsService.findPetsByUserId(request.user.id);
+    const ownPetsIds = response.data.map(pet => pet.id);
+
+    return ownPetsIds.includes(id);
   }
 }

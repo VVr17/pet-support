@@ -9,22 +9,31 @@ export class CategoriesService {
     private categoriesRepository: typeof Category,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+  async create(createCategoryDto: CreateCategoryDto) {
     const category = await this.categoriesRepository.create(createCategoryDto);
-    return category;
+
+    return {
+      message: 'Category has been successfully created',
+      data: category,
+    };
   }
 
-  async findAll(): Promise<Category[]> {
-    return this.categoriesRepository.findAll();
+  async findAll() {
+    const categories = await this.categoriesRepository.findAll();
+
+    return { message: 'Success', data: categories };
   }
 
-  async findOne(id: string): Promise<Category> {
+  async findOne(id: string) {
     const category = await this.categoriesRepository.findByPk(id);
 
     if (!category) {
       throw new NotFoundException(`Category with ID ${id} not found`);
     }
 
-    return category;
+    return {
+      message: 'The category has been successfully found.',
+      data: category,
+    };
   }
 }

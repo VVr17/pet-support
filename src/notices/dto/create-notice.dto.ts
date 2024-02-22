@@ -7,6 +7,7 @@ import {
   MinLength,
   IsOptional,
   MaxLength,
+  IsUrl,
   IsNumber,
 } from 'class-validator';
 
@@ -29,6 +30,7 @@ export class CreateNoticeDto {
       'https://cdn.pixabay.com/photo/2019/11/09/20/57/german-shepherd-4614451_1280.jpg',
   })
   @IsString()
+  @IsUrl()
   @IsNotEmpty()
   photoURL: string;
 
@@ -71,5 +73,5 @@ export class CreateNoticeDto {
   @ApiProperty({ example: '65c09f85e5500442ec32c622' })
   @IsString()
   @IsNotEmpty()
-  category: string;
+  categoryId: string;
 }

@@ -69,9 +69,7 @@ export class PetsController {
   @ApiForbiddenResponse({ description: 'Forbidden' })
   @UseGuards(IsMyPetGuard)
   @Delete(':id')
-  async remove(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
-    await this.petsService.removeOne(id, req.user.id);
-
-    return { message: `Pet ${id} has been deleted successfully` };
+  async remove(@Param('id') id: string) {
+    return await this.petsService.removeOne(id);
   }
 }

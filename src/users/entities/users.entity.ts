@@ -10,6 +10,7 @@ import {
 } from 'sequelize-typescript';
 import { Notice } from '../../notices/entities/notices.entity';
 import { Pet } from '../../pets/entities/pets.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Table({ tableName: 'Users', paranoid: true })
 export class User extends Model<User> {
@@ -21,34 +22,83 @@ export class User extends Model<User> {
   })
   id: string;
 
+  @ApiProperty({ example: 'email@gmail.com' })
   @Column({ unique: true, allowNull: false, validate: { isEmail: true } })
   email: string;
 
-  @Column
+  @ApiProperty({ example: 'Password1' })
+  @Column({
+    allowNull: false,
+    validate: {
+      len: {
+        args: [7, undefined],
+        msg: 'Password must be at least 7 characters long',
+      },
+      is: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{7,}$/,
+    },
+  })
   password: string;
 
+  @ApiProperty({ example: true })
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   isAdmin: boolean;
 
-  @Column
+  @ApiProperty({ example: 'John Smith', required: false })
+  @Column({
+    allowNull: true,
+    validate: {
+      len: {
+        args: [3, 32],
+        msg: 'Name must be between 3 and 32 characters long',
+      },
+      is: /^[a-zA-Zа-яА-ЯіІїЇґҐ]+(?: [a-zA-Zа-яА-ЯіІїЇґҐ]+)*$/,
+    },
+  })
   name: string;
 
-  @Column
+  @ApiProperty({ example: '20.11.1990', required: false })
+  @Column({ allowNull: true })
   birthday: string;
 
-  @Column
+  @ApiProperty({ example: 'Kyiv, Ukraine', required: false })
+  @Column({
+    allowNull: true,
+    validate: {
+      len: {
+        args: [5, 100],
+        msg: 'Location must be between 5 and 100 characters long',
+      },
+      is: /^[a-zA-Zа-яА-ЯіІїЇґҐ]+(?:[-\s]?[a-zA-Zа-яА-ЯіІїЇґҐ]+),\s[a-zA-Zа-яА-ЯіІїЇ'’\s-]+$/,
+    },
+  })
   city: string;
 
-  @Column
+  @ApiProperty({ example: '+380991234567', required: false })
+  @Column({
+    allowNull: true,
+    validate: {
+      is: /^\+380\d{9}$/,
+    },
+  })
   phone: string;
 
-  @Column
+  @ApiProperty({
+    example:
+      'https://cdn.pixabay.com/photo/2019/11/09/20/57/german-shepherd-4614451_1280.jpg',
+    required: false,
+  })
+  @Column({
+    allowNull: true,
+    validate: {
+      isUrl: { msg: 'Please enter a valid URL for the photo' },
+    },
+  })
   photoURL: string;
 
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   emailVerified: boolean;
 
-  @Column
+  @Column({ allowNull: true })
   resetPasswordToken: string;
 
   @HasMany(() => Pet)
@@ -57,6 +107,7 @@ export class User extends Model<User> {
   @HasMany(() => Notice, { as: 'UserNotices' })
   UserNotices: Notice[];
 
+  // @BelongsToMany(() => Notice, () => Favorites, 'userId', 'noticeId')
   @BelongsToMany(() => Notice, {
     through: 'Favorites',
     foreignKey: 'noticeId',

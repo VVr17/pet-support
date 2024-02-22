@@ -2,8 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { User } from './entities/users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Notice } from 'src/notices/entities/notices.entity';
-import { Category } from 'src/categories/entities/categories.entity';
 
 @Injectable()
 export class UsersService {
@@ -24,13 +22,25 @@ export class UsersService {
   }
 
   async findById(id: string) {
-    return await this.usersRepository.findByPk(id);
+    return await this.usersRepository.findByPk(id, {
+      attributes: {
+        exclude: [
+          'updatedAt',
+          'createdAt',
+          'password',
+          'resetPasswordToken',
+          'deletedAt',
+        ],
+      },
+    });
   }
 
   async update(updateUserDto: UpdateUserDto, id: string) {
-    return await this.usersRepository.update(updateUserDto, {
+    await this.usersRepository.update(updateUserDto, {
       where: { id },
     });
+
+    return { message: 'User profile has been successfully updated' };
   }
 
   async remove(id: string) {
@@ -43,45 +53,24 @@ export class UsersService {
     };
   }
 
-  async getUserNotices(id: string) {
-    const userData = await this.usersRepository.findByPk(id, {
-      include: [
-        {
-          model: Notice,
-          as: 'UserNotices',
-          include: [
-            {
-              model: Category,
-              attributes: { exclude: ['updatedAt', 'createdAt', 'slug', 'id'] },
-            },
-          ],
-          attributes: {
-            exclude: ['ownerId', 'createdAt', 'updatedAt', 'categoryId'],
-          },
-        },
-      ],
-      attributes: { exclude: ['createdAt', 'updatedAt'] },
-    });
-
+  async findUserFavoriteNotices(id: string) {
     return {
       message: 'Success',
-      data: userData.UserNotices,
+      data: ` get favorite with id ${id}`,
     };
   }
 
-  async getUserFavoriteNotices(id: string) {
-    return ` get favorite with id ${id}`;
-  }
-
   async addToFavorites(userId: string, noticeId: string) {
-    return ` add to favorite ${userId} ${noticeId}`;
+    return {
+      message: `Notice ${noticeId} added to favorites for user ${userId}`, // req.user._id
+      data: ` add to favorite ${userId} ${noticeId}`,
+    };
   }
 
   async removeFromFavorites(userId: string, noticeId: string) {
-    return `remove from favorite ${userId} ${noticeId}`;
-  }
-
-  async getUserPets(id: string) {
-    return ` get user's pets with id ${id}`;
+    return {
+      message: `Notice ${noticeId} removed from favorites for user ${userId}`, // req.user._id
+      data: `remove from favorite ${userId} ${noticeId}`,
+    };
   }
 }

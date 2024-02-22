@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
   DataType,
@@ -19,6 +20,7 @@ export class Notice extends Model<Notice> {
   })
   id: string;
 
+  @ApiProperty({ example: 'My Notice Title' })
   @Column({
     allowNull: false,
     validate: {
@@ -31,6 +33,10 @@ export class Notice extends Model<Notice> {
   })
   title: string;
 
+  @ApiProperty({
+    example:
+      'https://cdn.pixabay.com/photo/2019/11/09/20/57/german-shepherd-4614451_1280.jpg',
+  })
   @Column({
     allowNull: false,
     validate: {
@@ -44,6 +50,7 @@ export class Notice extends Model<Notice> {
   })
   photoURL: string;
 
+  @ApiProperty({ example: 'Sunny' })
   @Column({
     allowNull: false,
     validate: {
@@ -57,6 +64,7 @@ export class Notice extends Model<Notice> {
   })
   name: string;
 
+  @ApiProperty({ example: 'Shepherd' })
   @Column({
     allowNull: false,
     validate: {
@@ -70,6 +78,7 @@ export class Notice extends Model<Notice> {
   })
   breed: string;
 
+  @ApiProperty({ enum: ['male', 'female'], example: 'female' })
   @Column({
     allowNull: false,
     type: DataType.ENUM('male', 'female'),
@@ -83,6 +92,7 @@ export class Notice extends Model<Notice> {
   })
   sex: string;
 
+  @ApiProperty({ example: '20.10.2020' })
   @Column({
     allowNull: false,
     validate: {
@@ -91,6 +101,7 @@ export class Notice extends Model<Notice> {
   })
   birthDate: string;
 
+  @ApiProperty({ example: 'Kyiv, Ukraine' })
   @Column({
     allowNull: false,
     validate: {
@@ -104,6 +115,7 @@ export class Notice extends Model<Notice> {
   })
   location: string;
 
+  @ApiProperty({ example: 'This is my comments' })
   @Column({
     allowNull: false,
     validate: {
@@ -116,6 +128,7 @@ export class Notice extends Model<Notice> {
   })
   comments: string;
 
+  @ApiProperty({ required: false, example: 100 })
   @Column({
     allowNull: true,
     validate: { isInt: { msg: 'Price must be an integer' } },

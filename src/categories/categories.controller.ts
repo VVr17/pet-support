@@ -9,7 +9,7 @@ import {
 } from '@nestjs/swagger';
 import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 
-// import { AdminGuard } from '../auth/guards/admin.guard';
+import { AdminGuard } from '../auth/guards/admin.guard';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { Category } from './entities/categories.entity';
@@ -21,7 +21,7 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard) //AdminGuard
+  @UseGuards(JwtAuthGuard, AdminGuard)
   @ApiCreatedResponse({
     description: 'Category has been successfully created',
     type: Category,
@@ -30,19 +30,13 @@ export class CategoriesController {
   @ApiForbiddenResponse({ description: 'Forbidden' })
   @Post()
   async addCategory(@Body() createCategoryDto: CreateCategoryDto) {
-    const createdCategory =
-      await this.categoriesService.create(createCategoryDto);
-    return {
-      message: 'Category has been successfully created',
-      data: createdCategory,
-    };
+    return await this.categoriesService.create(createCategoryDto);
   }
 
   @ApiOkResponse({ type: [Category] })
   @Get()
-  async getAllCategories() {
-    const categories = await this.categoriesService.findAll();
-    return { message: 'Success', data: categories };
+  async findAllCategories() {
+    return await this.categoriesService.findAll();
   }
 
   @ApiOkResponse({
@@ -53,11 +47,7 @@ export class CategoriesController {
     description: 'Not found',
   })
   @Get(':id')
-  async GetCategoryById(@Param('id') id: string) {
-    const category = await this.categoriesService.findOne(id);
-    return {
-      message: 'The category has been successfully found.',
-      data: category,
-    };
+  async findCategoryById(@Param('id') id: string) {
+    return await this.categoriesService.findOne(id);
   }
 }

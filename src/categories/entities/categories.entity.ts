@@ -14,15 +14,53 @@ export class Category extends Model<Category> {
   id: string;
 
   @ApiProperty({ example: 'Lost/Found' })
-  @Column
+  @Column({
+    allowNull: false,
+    validate: {
+      len: {
+        args: [4, 30],
+        msg: 'Title must be between 4 and 30 characters long',
+      },
+      notEmpty: {
+        msg: 'Title is required',
+      },
+    },
+  })
   titleUk: string;
 
   @ApiProperty({ example: 'Загублені/Знайдені' })
-  @Column
+  @Column({
+    allowNull: false,
+    validate: {
+      len: {
+        args: [4, 30],
+        msg: 'Title must be between 4 and 30 characters long',
+      },
+      notEmpty: {
+        msg: 'Title is required',
+      },
+    },
+  })
   titleEn: string;
 
   @ApiProperty({ example: 'lost-found' })
-  @Column
+  @Column({
+    allowNull: false,
+    unique: true,
+    validate: {
+      len: {
+        args: [4, 100],
+        msg: 'Slug must be between 4 and 100 characters long',
+      },
+      is: {
+        args: /^[a-z0-9-]+$/,
+        msg: 'Invalid slug format. Use only lowercase letters, numbers, and hyphens.',
+      },
+      notEmpty: {
+        msg: 'Slug is required',
+      },
+    },
+  })
   slug: string;
 
   @HasMany(() => Notice)

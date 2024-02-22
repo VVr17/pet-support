@@ -17,13 +17,48 @@ export class NoticesService {
       ...createNoticeDto,
       ownerId: userId,
     });
-    return newNotice;
+
+    return {
+      message: 'New notice successfully created',
+      data: newNotice.dataValues,
+    };
   }
 
-  // Promise<{ notices: Notice[]; total: number }>
-  async findAll(category: string | null, page: number, limit: number) {
-    console.log(category, page, limit);
+  async findAll(categoryId: string | null, page: number, limit: number) {
+    const whereClause = categoryId ? { categoryId } : {};
+
+    // Find total count of notices
+    const total = await this.noticesRepository.count({ where: whereClause });
+
+    // Find notices with associations
     const notices = await this.noticesRepository.findAll({
+      where: whereClause,
+      include: [
+        {
+          model: User,
+          attributes: ['email', 'phone'],
+        },
+        {
+          model: Category,
+          attributes: { exclude: ['updatedAt', 'createdAt', 'slug'] },
+        },
+      ],
+      attributes: {
+        exclude: ['updatedAt', 'createdAt', 'ownerId', 'categoryId'],
+      },
+      offset: (page - 1) * limit, // Calculate offset based on page number
+      limit: limit, // Set limit to the specified limit
+    });
+
+    return {
+      message: 'Success',
+      total,
+      data: notices,
+    };
+  }
+
+  async findById(id: string) {
+    const notice = await this.noticesRepository.findByPk(id, {
       include: [
         {
           model: User,
@@ -40,56 +75,60 @@ export class NoticesService {
         exclude: ['updatedAt', 'createdAt', 'ownerId', 'categoryId'], // Exclude unnecessary fields from Notice
       },
     });
-    return notices;
+
+    if (!notice) {
+      throw new NotFoundException(`Notice with ID ${id} not found`);
+    }
+
+    return { message: 'Notice has been successfully found', data: notice };
   }
 
-  async findOne(id: string): Promise<Notice> {
-    return await this.noticesRepository.findByPk(id, {
-      include: [
-        {
-          model: User,
-          attributes: ['email', 'phone'],
-        },
-        {
-          model: Category,
-          attributes: {
-            exclude: ['updatedAt', 'createdAt', 'slug'],
-          },
-        },
-      ],
-      attributes: {
-        exclude: ['updatedAt', 'createdAt', 'ownerId', 'categoryId'], // Exclude unnecessary fields from Notice
-      },
-    });
-  }
-
-  async update(id: string, updateNoticeDto: UpdateNoticeDto): Promise<Notice> {
+  async update(id: string, updateNoticeDto: UpdateNoticeDto) {
     const noticeToUpdate = await this.noticesRepository.findByPk(id);
-    console.log('updateNoticeDto', updateNoticeDto);
+
     if (!noticeToUpdate) {
       throw new NotFoundException('Notice not found');
     }
 
-    // await noticeToUpdate.update(updateNoticeDto);
+    const updatedNotice = await noticeToUpdate.update(updateNoticeDto);
 
-    return noticeToUpdate;
+    return {
+      message: 'Notice has been successfully updated',
+      data: updatedNotice,
+    };
   }
 
-  async removeOne(noticeId: string, userId: string) {
-    console.log('userId', userId);
-    const noticeToDelete = await this.noticesRepository.findByPk(noticeId);
+  async removeOne(id: string) {
+    const noticeToDelete = await this.noticesRepository.findByPk(id);
 
     if (!noticeToDelete) {
-      throw new NotFoundException(`Notice with ID ${noticeId} not found`);
+      throw new NotFoundException(`Notice with ID ${id} not found`);
     }
 
-    return await this.noticesRepository.destroy({
-      where: { id: noticeId },
-    });
+    await this.noticesRepository.destroy({ where: { id } });
+
+    return { message: `Notice ${id} has been deleted successfully` };
   }
 
-  async removeMany(noticeIds: string[]): Promise<void> {
-    console.log(noticeIds);
-    // await this.noticesRepository.destroy({ where });
+  async findNoticesByUserId(id: string) {
+    const notices = await this.noticesRepository.findAll({
+      where: { ownerId: id },
+      include: [
+        {
+          model: Category,
+          attributes: {
+            exclude: ['updatedAt', 'createdAt', 'slug'],
+          },
+        },
+      ],
+      attributes: {
+        exclude: ['updatedAt', 'createdAt', 'ownerId', 'categoryId'], // Exclude unnecessary fields from Notice
+      },
+    });
+
+    return {
+      message: 'Success',
+      data: notices,
+    };
   }
 }

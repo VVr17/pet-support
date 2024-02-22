@@ -10,42 +10,56 @@ export class PetsService {
     private petsRepository: typeof Pet,
   ) {}
 
-  // Promise<Pet>
-  async create(createPetDto: CreatePetDto, userId: string): Promise<Pet> {
-    console.log('userId', userId);
-    const newPet = await this.petsRepository.create(createPetDto);
-    return newPet;
+  async create(createPetDto: CreatePetDto, userId: string) {
+    const newPet = await this.petsRepository.create({
+      ...createPetDto,
+      ownerId: userId,
+    });
+
+    return {
+      message: 'New pet successfully created',
+      data: newPet.dataValues,
+    };
   }
 
-  async update(id: string, updatePetDto: UpdatePetDto): Promise<Pet> {
+  async update(id: string, updatePetDto: UpdatePetDto) {
     const petToUpdate = await this.petsRepository.findByPk(id);
 
     if (!petToUpdate) {
-      throw new NotFoundException('Notice not found');
+      throw new NotFoundException('Pet has not been found');
     }
 
-    await petToUpdate.update(updatePetDto);
+    const updatedPet = await petToUpdate.update(updatePetDto);
 
-    return petToUpdate;
+    return {
+      message: 'Pet has been successfully updated',
+      data: updatedPet,
+    };
   }
 
-  async removeOne(petId: string, userId: string): Promise<void> {
-    console.log('userId', userId);
-    const petToDelete = await this.petsRepository.findByPk(petId);
+  async removeOne(id: string) {
+    const petToDelete = await this.petsRepository.findByPk(id);
 
     if (!petToDelete) {
-      throw new NotFoundException(`Notice with ID ${petId} not found`);
+      throw new NotFoundException(`Pet with Id ${id} not found`);
     }
 
-    await this.petsRepository.destroy({
-      where: { id: petId },
-    });
+    await this.petsRepository.destroy({ where: { id } });
 
-    return;
+    return { message: `Pet ${id} has been deleted successfully` };
   }
 
-  async removeMany(petIds: string[]): Promise<void> {
-    console.log(petIds);
-    // await this.petsRepository.destroy({ where });
+  async findPetsByUserId(id: string) {
+    const pets = await this.petsRepository.findAll({
+      where: { ownerId: id },
+      attributes: {
+        exclude: ['updatedAt', 'createdAt', 'ownerId'],
+      },
+    });
+
+    return {
+      message: 'Success',
+      data: pets,
+    };
   }
 }

@@ -8,7 +8,11 @@ import {
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { uniqueConstraintError, validationError } from './errorsConstants';
+import {
+  databaseError,
+  uniqueConstraintError,
+  validationError,
+} from '../utils/errorsConstants';
 
 @Injectable()
 export class ErrorsInterceptor implements NestInterceptor {
@@ -34,6 +38,12 @@ export class ErrorsInterceptor implements NestInterceptor {
           );
         }
 
+        // Database format error
+        if (err.name === databaseError) {
+          return throwError(() => new BadRequestException('Invalid DB syntax'));
+        }
+
+        console.log('err', err);
         return throwError(() => new InternalServerErrorException());
       }),
     );
