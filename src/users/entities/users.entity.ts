@@ -11,6 +11,7 @@ import {
 import { Notice } from '../../notices/entities/notices.entity';
 import { Pet } from '../../pets/entities/pets.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { Favorites } from '../../favorites/entities/favorites.entity';
 
 @Table({ tableName: 'Users', paranoid: true })
 export class User extends Model<User> {
@@ -101,20 +102,21 @@ export class User extends Model<User> {
   @Column({ allowNull: true })
   resetPasswordToken: string;
 
+  // One-to-many User -> Pets
   @HasMany(() => Pet)
   UserPets: Pet[];
 
+  // One-to-many User -> Notices
   @HasMany(() => Notice, { as: 'UserNotices' })
   UserNotices: Notice[];
 
-  // @BelongsToMany(() => Notice, () => Favorites, 'userId', 'noticeId')
+  // Many-to-Many User <-> Notice
   @BelongsToMany(() => Notice, {
-    through: 'Favorites',
-    foreignKey: 'noticeId',
-    otherKey: 'userId',
-    as: 'User',
+    through: () => Favorites,
+    foreignKey: 'userId',
+    as: 'FavoriteNotices',
   })
-  favoriteNotices: Notice[];
+  UserFavorites: Notice[];
 
   // Hash the password before storing it in the database
   @BeforeCreate

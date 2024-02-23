@@ -24,6 +24,7 @@ import { Pet } from 'src/pets/entities/pets.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { NoticesService } from 'src/notices/notices.service';
 import { PetsService } from 'src/pets/pets.service';
+import { FavoritesService } from 'src/favorites/favorites.service';
 
 @ApiTags('Users') // Swagger tag for API
 @UseGuards(JwtAuthGuard)
@@ -34,6 +35,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly noticesService: NoticesService,
+    private readonly favoritesService: FavoritesService,
     private readonly petsService: PetsService,
   ) {}
 
@@ -70,14 +72,16 @@ export class UsersController {
   @ApiOkResponse({ type: [Notice] })
   @Get('me/notices')
   async findUserNotices(@Request() req: AuthenticatedRequest) {
-    return await this.noticesService.findNoticesByUserId(req.user.id);
+    // return await this.noticesService.findNoticesByUserId(req.user.id);
+    return await this.usersService.findMyNotices(req.user.id);
   }
 
   // Get user's favorite notices
   @ApiOkResponse({ type: [Notice] })
   @Get('me/favorites')
   async findUserFavorites(@Request() req: AuthenticatedRequest) {
-    return await this.usersService.findUserFavoriteNotices(req.user.id);
+    // return await this.favoritesService.findFavoriteByUserId(req.user.id);
+    return await this.usersService.findFavorites(req.user.id);
   }
 
   // Add notices to favorites
@@ -87,7 +91,7 @@ export class UsersController {
     @Request() req: AuthenticatedRequest,
     @Param('id') id: string,
   ) {
-    return await this.usersService.addToFavorites(req.user.id, id);
+    return await this.favoritesService.addToFavorites(req.user.id, id);
   }
 
   // Remove notices from favorites
@@ -97,7 +101,7 @@ export class UsersController {
     @Request() req: AuthenticatedRequest,
     @Param('id') id: string,
   ) {
-    return await this.usersService.removeFromFavorites(req.user.id, id);
+    return await this.favoritesService.removeFromFavorites(req.user.id, id);
   }
 
   // Get user's pets

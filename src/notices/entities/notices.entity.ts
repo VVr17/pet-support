@@ -6,9 +6,11 @@ import {
   Table,
   ForeignKey,
   BelongsTo,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import { Category } from '../../categories/entities/categories.entity';
 import { User } from '../../users/entities/users.entity';
+import { Favorites } from '../../favorites/entities/favorites.entity';
 
 @Table({ tableName: 'Notices' })
 export class Notice extends Model<Notice> {
@@ -148,6 +150,14 @@ export class Notice extends Model<Notice> {
   @Column({ field: 'Owner_id', type: DataType.UUID, allowNull: false })
   ownerId: string;
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, { foreignKey: 'ownerId', as: 'Owner' })
   owner: User;
+
+  // Many-to-many: User <-> Notice
+  @BelongsToMany(() => User, {
+    through: () => Favorites,
+    foreignKey: 'noticeId',
+    as: 'FavoriteBy',
+  })
+  users: User[];
 }

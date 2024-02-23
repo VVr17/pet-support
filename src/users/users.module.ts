@@ -7,6 +7,8 @@ import { NoticesService } from 'src/notices/notices.service';
 import { noticesProviders } from 'src/notices/notices.providers';
 import { PetsService } from 'src/pets/pets.service';
 import { petsProviders } from 'src/pets/pets.providers';
+import { favoriteNoticesProviders } from 'src/favorites/favorites.providers';
+import { FavoritesService } from 'src/favorites/favorites.service';
 
 @Module({
   imports: [DatabaseModule],
@@ -15,9 +17,11 @@ import { petsProviders } from 'src/pets/pets.providers';
     UsersService,
     NoticesService,
     PetsService,
+    FavoritesService,
     ...usersProviders,
     ...noticesProviders,
     ...petsProviders,
+    ...favoriteNoticesProviders,
   ],
   exports: [UsersService],
 })

@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { User } from './entities/users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Notice } from 'src/notices/entities/notices.entity';
 
 @Injectable()
 export class UsersService {
@@ -53,24 +54,25 @@ export class UsersService {
     };
   }
 
-  async findUserFavoriteNotices(id: string) {
-    return {
-      message: 'Success',
-      data: ` get favorite with id ${id}`,
-    };
+  async findFavorites(id: string) {
+    return this.usersRepository.findByPk(id, {
+      include: [
+        {
+          model: Notice,
+          as: 'FavoriteNotices',
+        },
+      ],
+    });
   }
 
-  async addToFavorites(userId: string, noticeId: string) {
-    return {
-      message: `Notice ${noticeId} added to favorites for user ${userId}`, // req.user._id
-      data: ` add to favorite ${userId} ${noticeId}`,
-    };
-  }
-
-  async removeFromFavorites(userId: string, noticeId: string) {
-    return {
-      message: `Notice ${noticeId} removed from favorites for user ${userId}`, // req.user._id
-      data: `remove from favorite ${userId} ${noticeId}`,
-    };
+  async findMyNotices(id: string) {
+    return this.usersRepository.findByPk(id, {
+      include: [
+        {
+          model: Notice,
+          as: 'UserNotices',
+        },
+      ],
+    });
   }
 }

@@ -10,6 +10,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import {
   databaseError,
+  foreignKeyConstraintError,
   uniqueConstraintError,
   validationError,
 } from '../utils/errorsConstants';
@@ -29,6 +30,10 @@ export class ErrorsInterceptor implements NestInterceptor {
           return throwError(
             () => new BadRequestException(err.errors[0].message),
           );
+        }
+
+        if (err.name === foreignKeyConstraintError) {
+          return throwError(() => new BadRequestException(err.parent.detail));
         }
 
         // Validation error
