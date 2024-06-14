@@ -1,6 +1,5 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateUserDto } from './create-user.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { PartialType } from '@nestjs/mapped-types';
 import {
   IsEmail,
   IsOptional,
@@ -10,24 +9,12 @@ import {
   MinLength,
 } from 'class-validator';
 
+import { CreateUserDto } from './create-user.dto';
+
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ example: 'email@gmail.com' })
   @IsEmail({}, { message: 'Please provide a valid email address' })
   email: string;
-
-  @ApiProperty({ example: 'Password1' })
-  @IsString()
-  @MinLength(7, { message: 'Password must be at least 7 characters long' })
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{7,}$/, {
-    message:
-      'Password must contain at least one uppercase letter, one lowercase letter, and one number',
-  })
-  password: string;
-
-  @ApiProperty({ example: true })
-  @IsOptional()
-  @IsString()
-  isAdmin?: boolean;
 
   @ApiProperty({ required: false, example: 'John Smith' })
   @IsOptional()

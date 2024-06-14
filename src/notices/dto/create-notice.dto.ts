@@ -70,7 +70,7 @@ export class CreateNoticeDto {
   @IsNumber()
   price: number;
 
-  @ApiProperty({ example: '65c09f85e5500442ec32c622' })
+  @ApiProperty({ example: '7cab61c5-0b8f-4eac-8b1c-d6e5290a2170' })
   @IsString()
   @IsNotEmpty()
   categoryId: string;

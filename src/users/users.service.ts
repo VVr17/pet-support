@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { User } from './entities/users.entity';
+
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { Notice } from 'src/notices/entities/notices.entity';
+import { User } from './entities/users.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -18,7 +19,6 @@ export class UsersService {
   async findOne(email: string) {
     return await this.usersRepository.findOne({
       where: { email },
-      // attributes: ['email', 'password', 'id', 'name', 'isAdmin'],
     });
   }
 
@@ -55,7 +55,7 @@ export class UsersService {
   }
 
   async findFavorites(id: string) {
-    return this.usersRepository.findByPk(id, {
+    const userWithFavorites = await this.usersRepository.findByPk(id, {
       include: [
         {
           model: Notice,
@@ -63,10 +63,20 @@ export class UsersService {
         },
       ],
     });
+
+    if (userWithFavorites) {
+      return {
+        message: 'Success',
+        data: (userWithFavorites as unknown as { FavoriteNotices: Notice[] })
+          .FavoriteNotices,
+      };
+    }
+
+    return [];
   }
 
   async findMyNotices(id: string) {
-    return this.usersRepository.findByPk(id, {
+    const userWithOwnNotices = await this.usersRepository.findByPk(id, {
       include: [
         {
           model: Notice,
@@ -74,5 +84,18 @@ export class UsersService {
         },
       ],
     });
+
+    if (userWithOwnNotices) {
+      return {
+        message: 'Success',
+        data: (userWithOwnNotices as unknown as { UserNotices: Notice[] })
+          .UserNotices,
+      };
+    }
+
+    return {
+      message: 'Success',
+      data: [],
+    };
   }
 }

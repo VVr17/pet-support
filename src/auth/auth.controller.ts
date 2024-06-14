@@ -8,9 +8,10 @@ import {
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { User } from 'src/users/entities/users.entity';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { swaggerSignUpUserSchema } from './dto/sign-up-user-schema';
 
 @ApiTags('Auth') // Swagger tag for API
 @Controller('auth')
@@ -22,28 +23,14 @@ export class AuthController {
     type: User,
   })
   @ApiBadRequestResponse({ description: 'Bad request' })
+  @ApiBody(swaggerSignUpUserSchema)
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto) {
     return await this.authService.signup(createUserDto);
   }
 
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        email: {
-          type: 'string',
-          example: 'user@example.com',
-        },
-        password: {
-          type: 'string',
-          example: 'Password123',
-        },
-      },
-      required: ['email', 'password'],
-    },
-  })
+  @ApiBody(swaggerSignUpUserSchema)
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async logIn(@Request() req: AuthenticatedRequest) {

@@ -1,4 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+
 import { Category } from './entities/categories.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 
@@ -19,13 +20,17 @@ export class CategoriesService {
   }
 
   async findAll() {
-    const categories = await this.categoriesRepository.findAll();
+    const categories = await this.categoriesRepository.findAll({
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+    });
 
     return { message: 'Success', data: categories };
   }
 
   async findOne(id: string) {
-    const category = await this.categoriesRepository.findByPk(id);
+    const category = await this.categoriesRepository.findByPk(id, {
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+    });
 
     if (!category) {
       throw new NotFoundException(`Category with ID ${id} not found`);

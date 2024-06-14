@@ -20,6 +20,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  // Add new category - guard for Admin only
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, AdminGuard)
   @ApiCreatedResponse({
@@ -33,12 +34,14 @@ export class CategoriesController {
     return await this.categoriesService.create(createCategoryDto);
   }
 
+  // Get all categories
   @ApiOkResponse({ type: [Category] })
   @Get()
   async findAllCategories() {
     return await this.categoriesService.findAll();
   }
 
+  // Get category by Id
   @ApiOkResponse({
     description: 'The category has been successfully found.',
     type: Category,

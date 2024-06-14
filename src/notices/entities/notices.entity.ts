@@ -8,9 +8,10 @@ import {
   BelongsTo,
   BelongsToMany,
 } from 'sequelize-typescript';
+
 import { Category } from '../../categories/entities/categories.entity';
-import { User } from '../../users/entities/users.entity';
 import { Favorites } from '../../favorites/entities/favorites.entity';
+import { User } from '../../users/entities/users.entity';
 
 @Table({ tableName: 'Notices' })
 export class Notice extends Model<Notice> {

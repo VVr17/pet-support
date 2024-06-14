@@ -19,11 +19,11 @@ import {
 } from '@nestjs/swagger';
 
 import { CreatePetDto } from './dto/create-pet.dto';
-import { UpdatePetDto } from './dto/update-pet.dto';
-import { PetsService } from './pets.service';
-import { Pet } from './entities/pets.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { IsMyPetGuard } from './guards/isMyPet.guard';
+import { PetsService } from './pets.service';
+import { Pet } from './entities/pets.entity';
+import { UpdatePetDto } from './dto/update-pet.dto';
 
 @ApiTags('Pets') // Swagger tag for API
 @UseGuards(JwtAuthGuard)
@@ -33,6 +33,7 @@ import { IsMyPetGuard } from './guards/isMyPet.guard';
 export class PetsController {
   constructor(private readonly petsService: PetsService) {}
 
+  // Add new pet
   @ApiCreatedResponse({
     description: 'The pet has been successfully created.',
     type: Pet,
@@ -45,6 +46,7 @@ export class PetsController {
     return this.petsService.create(createPetDto, req.user.id);
   }
 
+  // Update pet
   @ApiOkResponse({
     description: 'The pet has been successfully updated.',
     type: Pet,
@@ -59,6 +61,7 @@ export class PetsController {
     return this.petsService.update(id, updatePetDto);
   }
 
+  // Delete pet
   @ApiOkResponse({
     description: 'The pet has been successfully removed.',
     type: Pet,

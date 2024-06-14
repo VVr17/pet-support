@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { NoticesService } from './notices.service';
-import { NoticesController } from './notices.controller';
-import { noticesProviders } from './notices.providers';
+
 import { favoriteNoticesProviders } from '../favorites/favorites.providers';
+import { noticesProviders } from './notices.providers';
+import { NoticesController } from './notices.controller';
+import { NoticesService } from './notices.service';
 
 @Module({
   controllers: [NoticesController],

@@ -1,11 +1,12 @@
+import * as dotenv from 'dotenv';
 import { Module } from '@nestjs/common';
+
 import { AuthModule } from './auth/auth.module';
-import { UserModule } from './users/users.module';
-import { NoticeModule } from './notices/notices.module';
-import { PetModule } from './pets/pets.module';
 import { CategoryModule } from './categories/categories.module';
 import { FavoritesModule } from './favorites/favorites.module';
-import * as dotenv from 'dotenv';
+import { NoticeModule } from './notices/notices.module';
+import { PetModule } from './pets/pets.module';
+import { UserModule } from './users/users.module';
 
 dotenv.config();
 

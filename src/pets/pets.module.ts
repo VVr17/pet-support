@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { PetsService } from './pets.service';
+
 import { PetsController } from './pets.controller';
 import { petsProviders } from './pets.providers';
+import { PetsService } from './pets.service';
 import { usersProviders } from 'src/users/users.providers';
 
 @Module({

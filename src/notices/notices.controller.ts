@@ -23,17 +23,18 @@ import {
 } from '@nestjs/common';
 
 import { CreateNoticeDto } from './dto/create-notice.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { IsMyNoticeGuard } from './guards/isMyNotice.guard';
 import { NoticesService } from './notices.service';
 import { Notice } from './entities/notices.entity';
 import { UpdateNoticeDto } from './dto/update-notice.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { IsMyNoticeGuard } from './guards/isMyNotice.guard';
 
 @ApiTags('Notices') // Swagger tags for API
 @Controller('notices')
 export class NoticesController {
   constructor(private readonly noticesService: NoticesService) {}
 
+  // Add new notice
   @ApiCreatedResponse({
     description: 'The notice has been successfully created.',
     type: Notice,
@@ -50,6 +51,7 @@ export class NoticesController {
     return await this.noticesService.create(createNoticeDto, req.user.id);
   }
 
+  // Get all notices
   @ApiOkResponse({ type: [Notice] })
   @ApiQuery({ name: 'category', required: false })
   @ApiQuery({ name: 'page', required: false })
@@ -63,6 +65,7 @@ export class NoticesController {
     return await this.noticesService.findAll(category, +page, +limit);
   }
 
+  // Get notice by Id
   @ApiOkResponse({
     description: 'The notice has been successfully found.',
     type: Notice,
@@ -75,6 +78,7 @@ export class NoticesController {
     return await this.noticesService.findById(id);
   }
 
+  // Update notice
   @ApiOkResponse({
     description: 'The notice has been successfully updated.',
     type: Notice,
@@ -96,6 +100,7 @@ export class NoticesController {
     return await this.noticesService.update(id, updateNoticeDto);
   }
 
+  // Delete notice
   @ApiOkResponse({
     description: 'The notice has been successfully deleted.',
     type: Notice,

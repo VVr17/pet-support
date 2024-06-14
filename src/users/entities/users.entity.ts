@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import * as bcrypt from 'bcryptjs';
 import {
   Column,
@@ -8,10 +9,10 @@ import {
   BelongsToMany,
   BeforeCreate,
 } from 'sequelize-typescript';
+
+import { Favorites } from '../../favorites/entities/favorites.entity';
 import { Notice } from '../../notices/entities/notices.entity';
 import { Pet } from '../../pets/entities/pets.entity';
-import { ApiProperty } from '@nestjs/swagger';
-import { Favorites } from '../../favorites/entities/favorites.entity';
 
 @Table({ tableName: 'Users', paranoid: true })
 export class User extends Model<User> {

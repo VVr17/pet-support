@@ -1,8 +1,8 @@
+import * as dotenv from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import { Swagger } from './swagger/swagger.config';
 import { ValidationPipe } from '@nestjs/common';
 import { useContainer } from 'class-validator';
-import * as dotenv from 'dotenv';
 
 import { AppModule } from './app.module';
 import { ErrorsInterceptor } from './interceptors/errors.interceptor';

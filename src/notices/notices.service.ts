@@ -1,9 +1,10 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+
+import { Category } from 'src/categories/entities/categories.entity';
+import { CreateNoticeDto } from './dto/create-notice.dto';
 import { Notice } from './entities/notices.entity';
 import { UpdateNoticeDto } from './dto/update-notice.dto';
-import { CreateNoticeDto } from './dto/create-notice.dto';
 import { User } from 'src/users/entities/users.entity';
-import { Category } from 'src/categories/entities/categories.entity';
 
 @Injectable()
 export class NoticesService {

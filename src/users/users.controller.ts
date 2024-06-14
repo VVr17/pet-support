@@ -16,15 +16,16 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+
+import { FavoritesService } from 'src/favorites/favorites.service';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { NoticesService } from 'src/notices/notices.service';
+import { Notice } from 'src/notices/entities/notices.entity';
+import { Pet } from 'src/pets/entities/pets.entity';
+import { PetsService } from 'src/pets/pets.service';
 import { UsersService } from './users.service';
 import { User } from './entities/users.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Notice } from 'src/notices/entities/notices.entity';
-import { Pet } from 'src/pets/entities/pets.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { NoticesService } from 'src/notices/notices.service';
-import { PetsService } from 'src/pets/pets.service';
-import { FavoritesService } from 'src/favorites/favorites.service';
 
 @ApiTags('Users') // Swagger tag for API
 @UseGuards(JwtAuthGuard)
@@ -47,7 +48,7 @@ export class UsersController {
     return { data: user };
   }
 
-  // update user data
+  // Update user data
   @ApiOkResponse({
     type: User,
     description: 'User profile has been successfully updated',
@@ -72,20 +73,18 @@ export class UsersController {
   @ApiOkResponse({ type: [Notice] })
   @Get('me/notices')
   async findUserNotices(@Request() req: AuthenticatedRequest) {
-    // return await this.noticesService.findNoticesByUserId(req.user.id);
-    return await this.usersService.findMyNotices(req.user.id);
+    return await this.noticesService.findNoticesByUserId(req.user.id);
   }
 
   // Get user's favorite notices
   @ApiOkResponse({ type: [Notice] })
   @Get('me/favorites')
   async findUserFavorites(@Request() req: AuthenticatedRequest) {
-    // return await this.favoritesService.findFavoriteByUserId(req.user.id);
-    return await this.usersService.findFavorites(req.user.id);
+    return await this.favoritesService.findFavoriteByUserId(req.user.id);
   }
 
   // Add notices to favorites
-  @ApiOkResponse({ type: [Notice] })
+  @ApiOkResponse({ type: Notice })
   @Post('me/favorites/:id')
   async addToFavorites(
     @Request() req: AuthenticatedRequest,
@@ -95,7 +94,7 @@ export class UsersController {
   }
 
   // Remove notices from favorites
-  @ApiOkResponse({ type: [Notice] })
+  @ApiOkResponse({ type: Notice })
   @Delete('me/favorites/:id')
   async removeFromFavorites(
     @Request() req: AuthenticatedRequest,
