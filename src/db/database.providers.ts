@@ -15,11 +15,17 @@ export const databaseProviders = [
     useFactory: async () => {
       const sequelize = new Sequelize({
         dialect: 'postgres',
-        host: process.env.DATABASE_HOST,
-        port: 5432,
-        database: process.env.DATABASE_DB,
-        username: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
+        host: process.env.PGHOST,
+        port: Number(process.env.PGPORT),
+        database: process.env.PGDATABASE,
+        username: process.env.PGUSER,
+        password: process.env.PGPASSWORD,
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
       });
 
       sequelize.addModels([User, Notice, Pet, Category, Favorites]);

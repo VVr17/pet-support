@@ -10,7 +10,14 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 @Module({
-  imports: [AuthModule, UserModule, NoticeModule, PetModule, CategoryModule, FavoritesModule],
+  imports: [
+    AuthModule,
+    UserModule,
+    NoticeModule,
+    PetModule,
+    CategoryModule,
+    FavoritesModule,
+  ],
   controllers: [],
   providers: [],
 })
