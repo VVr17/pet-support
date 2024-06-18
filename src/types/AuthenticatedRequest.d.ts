@@ -3,6 +3,7 @@ interface AuthenticatedUser {
   email: string;
   name: string;
   password: string;
+  isAdmin: boolean;
 }
 
 interface AuthenticatedRequest {
