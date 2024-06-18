@@ -13,6 +13,13 @@ dotenv.config();
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
 
+  // Enable CORS with configuration
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN || '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   app.useGlobalPipes(new ValidationPipe()); // Adds validation
