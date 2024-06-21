@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsNotEmpty,
@@ -7,6 +8,7 @@ import {
   MinLength,
   MaxLength,
   IsUrl,
+  IsDate,
 } from 'class-validator';
 
 export class CreatePetDto {
@@ -20,10 +22,11 @@ export class CreatePetDto {
   @IsNotEmpty({ message: 'Name is required' })
   name: string;
 
-  @ApiProperty({ required: false, example: '20.10.2020' })
+  @ApiProperty({ required: false, example: '2021-11-20T00:00:00Z' })
   @IsOptional()
-  @IsString()
-  birthDate?: string;
+  @IsDate()
+  @Type(() => Date)
+  dateOfBirth?: Date;
 
   @ApiProperty({ required: false, example: 'Shepherd' })
   @ApiProperty()

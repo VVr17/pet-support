@@ -38,14 +38,14 @@ export class Pet extends Model<Pet> {
   })
   name: string;
 
-  @ApiProperty({ required: false, example: '20.10.2020' })
+  @ApiProperty({ required: false, example: '2021-11-20T00:00:00Z' })
   @Column({
     allowNull: false,
     validate: {
       notNull: { msg: 'Birth date is required' },
     },
   })
-  birthDate?: string;
+  dateOfBirth: Date;
 
   @ApiProperty({ required: false, example: 'Shepherd' })
   @Column({

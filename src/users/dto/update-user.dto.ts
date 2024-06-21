@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PartialType } from '@nestjs/mapped-types';
 import {
+  IsDate,
   IsEmail,
   IsOptional,
   IsString,
@@ -10,6 +11,7 @@ import {
 } from 'class-validator';
 
 import { CreateUserDto } from './create-user.dto';
+import { Type } from 'class-transformer';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ example: 'email@gmail.com' })
@@ -26,10 +28,11 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   })
   fullName?: string;
 
-  @ApiProperty({ required: false, example: '20.11.1990' })
+  @ApiProperty({ required: false, example: '1990-11-20T00:00:00Z' })
   @IsOptional()
-  @IsString()
-  birthday?: string;
+  @IsDate()
+  @Type(() => Date)
+  birthday?: Date;
 
   @ApiProperty({ example: 'Kyiv, Ukraine' })
   @IsOptional()

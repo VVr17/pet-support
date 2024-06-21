@@ -58,9 +58,9 @@ export class User extends Model<User> {
   })
   fullName: string;
 
-  @ApiProperty({ example: '20.11.1990', required: false })
-  @Column({ allowNull: true })
-  birthday: string;
+  @ApiProperty({ example: '1990-11-20T00:00:00Z', required: false })
+  @Column({ allowNull: true, type: DataType.DATE })
+  birthday: Date;
 
   @ApiProperty({ example: 'Kyiv, Ukraine', required: false })
   @Column({

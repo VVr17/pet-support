@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsEmail,
@@ -6,6 +7,7 @@ import {
   Matches,
   MinLength,
   MaxLength,
+  IsDate,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -36,10 +38,11 @@ export class CreateUserDto {
   })
   fullName?: string;
 
-  @ApiProperty({ required: false, example: '20.11.1990' })
+  @ApiProperty({ required: false, example: '1990-11-20T00:00:00Z' })
   @IsOptional()
-  @IsString()
-  birthday?: string;
+  @IsDate()
+  @Type(() => Date)
+  birthday?: Date;
 
   @ApiProperty({ example: 'Kyiv, Ukraine' })
   @IsOptional()

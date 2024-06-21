@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsEnum,
@@ -9,6 +10,7 @@ import {
   MaxLength,
   IsUrl,
   IsNumber,
+  IsDate,
 } from 'class-validator';
 
 export class CreateNoticeDto {
@@ -45,10 +47,11 @@ export class CreateNoticeDto {
   @IsEnum(['male', 'female'])
   sex: 'male' | 'female';
 
-  @ApiProperty({ example: '20.10.2020' })
-  @IsString()
-  @IsNotEmpty()
-  birthDate: string;
+  @ApiProperty({ required: false, example: '2021-11-20T00:00:00Z' })
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  dateOfBirth: Date;
 
   @ApiProperty({ example: 'Kyiv, Ukraine' })
   @IsString()

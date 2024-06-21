@@ -95,14 +95,14 @@ export class Notice extends Model<Notice> {
   })
   sex: string;
 
-  @ApiProperty({ example: '20.10.2020' })
+  @ApiProperty({ example: '1990-11-20T00:00:00Z', required: false })
   @Column({
     allowNull: false,
     validate: {
       notNull: { msg: 'Birth date is required' },
     },
   })
-  birthDate: string;
+  dateOfBirth: Date;
 
   @ApiProperty({ example: 'Kyiv, Ukraine' })
   @Column({
