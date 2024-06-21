@@ -7,6 +7,7 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { NoticeModule } from './notices/notices.module';
 import { PetModule } from './pets/pets.module';
 import { UserModule } from './users/users.module';
+import { FilesModule } from './files/files.module';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ dotenv.config();
     PetModule,
     CategoryModule,
     FavoritesModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [],

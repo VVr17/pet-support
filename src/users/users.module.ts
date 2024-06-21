@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { favoriteNoticesProviders } from 'src/favorites/favorites.providers';
 import { FavoritesService } from 'src/favorites/favorites.service';
-import { DatabaseModule } from 'src/db/database.module';
+import { DatabaseModule } from 'src/config/db/database.module';
 import { noticesProviders } from 'src/notices/notices.providers';
 import { NoticesService } from 'src/notices/notices.service';
 import { petsProviders } from 'src/pets/pets.providers';
