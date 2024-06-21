@@ -56,7 +56,7 @@ export class User extends Model<User> {
       is: /^[a-zA-Zа-яА-ЯіІїЇґҐ]+(?: [a-zA-Zа-яА-ЯіІїЇґҐ]+)*$/,
     },
   })
-  name: string;
+  fullName: string;
 
   @ApiProperty({ example: '20.11.1990', required: false })
   @Column({ allowNull: true })
@@ -73,7 +73,7 @@ export class User extends Model<User> {
       is: /^[a-zA-Zа-яА-ЯіІїЇґҐ]+(?:[-\s]?[a-zA-Zа-яА-ЯіІїЇґҐ]+),\s[a-zA-Zа-яА-ЯіІїЇ'’\s-]+$/,
     },
   })
-  city: string;
+  address: string;
 
   @ApiProperty({ example: '+380991234567', required: false })
   @Column({

@@ -1,7 +1,7 @@
 interface AuthenticatedUser {
   id: string;
   email: string;
-  name: string;
+  fullName: string;
   password: string;
   isAdmin: boolean;
 }

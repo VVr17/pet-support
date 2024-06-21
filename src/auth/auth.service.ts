@@ -38,11 +38,11 @@ export class AuthService {
   login(user: AuthenticatedUser) {
     const payload = { email: user.email, sub: user.id };
 
-    const { password, id, email, isAdmin, name } = user;
+    const { password, id, email, isAdmin, fullName } = user;
 
     return {
       access_token: this.jwtService.sign(payload),
-      data: { id, email, isAdmin, name },
+      data: { id, email, isAdmin, fullName },
     };
   }
 }

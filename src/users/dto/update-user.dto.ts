@@ -13,7 +13,7 @@ import { CreateUserDto } from './create-user.dto';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ example: 'email@gmail.com' })
-  @IsEmail({}, { message: 'Please provide a valid email address' })
+  @IsEmail({}, { message: 'Please provide a valid email location' })
   email: string;
 
   @ApiProperty({ required: false, example: 'John Smith' })
@@ -24,7 +24,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @Matches(/^[a-zA-Zа-яА-ЯіІїЇґҐ]+(?: [a-zA-Zа-яА-ЯіІїЇґҐ]+)*$/, {
     message: 'Name must contain only letters and spaces',
   })
-  name?: string;
+  fullName?: string;
 
   @ApiProperty({ required: false, example: '20.11.1990' })
   @IsOptional()
@@ -34,15 +34,15 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ example: 'Kyiv, Ukraine' })
   @IsOptional()
   @IsString()
-  @MinLength(5, { message: 'City must be at least 5 characters long' })
-  @MaxLength(100, { message: 'City cannot exceed 100 characters' })
+  @MinLength(5, { message: 'location must be at least 5 characters long' })
+  @MaxLength(100, { message: 'location cannot exceed 100 characters' })
   @Matches(
     /^[a-zA-Zа-яА-ЯіІїЇґҐ]+(?:[-\s]?[a-zA-Zа-яА-ЯіІїЇґҐ]+),\s[a-zA-Zа-яА-ЯіІїЇ'’\s-]+$/,
     {
-      message: 'Invalid city format. Please provide a valid city name',
+      message: 'Invalid location format. Please provide a valid location',
     },
   )
-  city?: string;
+  location?: string;
 
   @ApiProperty({ required: false, example: '+380991234567' })
   @IsOptional()
