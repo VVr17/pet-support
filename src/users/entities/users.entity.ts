@@ -73,7 +73,7 @@ export class User extends Model<User> {
       is: /^[a-zA-Zа-яА-ЯіІїЇґҐ]+(?:[-\s]?[a-zA-Zа-яА-ЯіІїЇґҐ]+),\s[a-zA-Zа-яА-ЯіІїЇ'’\s-]+$/,
     },
   })
-  address: string;
+  location: string;
 
   @ApiProperty({ example: '+380991234567', required: false })
   @Column({
