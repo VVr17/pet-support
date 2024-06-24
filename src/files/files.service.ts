@@ -10,28 +10,36 @@ export class FilesService {
     const fileName = `${uuidv4()}-${file.originalname}`;
     const fileUpload = bucket.file(fileName);
 
-    console.log('fileUpload - from firebase', fileUpload);
-    const blobStream = fileUpload.createWriteStream({
-      metadata: {
-        contentType: file.mimetype,
-      },
+    await fileUpload.save(file.buffer, {
+      metadata: { contentType: file.mimetype },
+      public: true,
     });
 
-    console.log('blobStream', blobStream);
-    return new Promise((resolve, reject) => {
-      blobStream.on('error', error => reject(error));
-      blobStream.on('finish', () => {
-        fileUpload
-          .getSignedUrl({
-            action: 'read',
-            expires: '03-09-2491', // Set the expiration date far in the future
-          })
-          .then(signedUrls => {
-            resolve(signedUrls[0]);
-          });
-      });
-      blobStream.end(file.buffer);
-    });
+    const url = fileUpload.publicUrl();
+    return url;
+
+    // console.log('fileUpload - from firebase', fileUpload);
+    // const blobStream = fileUpload.createWriteStream({
+    //   metadata: {
+    //     contentType: file.mimetype,
+    //   },
+    // });
+
+    // console.log('blobStream', blobStream);
+    // return new Promise((resolve, reject) => {
+    //   blobStream.on('error', error => reject(error));
+    //   blobStream.on('finish', () => {
+    //     fileUpload
+    //       .getSignedUrl({
+    //         action: 'read',
+    //         expires: '03-09-2491', // Set the expiration date far in the future
+    //       })
+    //       .then(signedUrls => {
+    //         resolve(signedUrls[0]);
+    //       });
+    //   });
+    //   blobStream.end(file.buffer);
+    // });
   }
 
   // constructor(
