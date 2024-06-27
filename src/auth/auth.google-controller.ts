@@ -1,6 +1,7 @@
-import { Controller, Get, Redirect, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
+import { Response } from 'express';
 
 @Controller('auth/google')
 export class GoogleAuthController {
@@ -15,11 +16,16 @@ export class GoogleAuthController {
   @Get('callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
-    const auth = await this.authService.googleLogin(req);
+    const access_token = await this.authService.googleLogin(req);
 
-    // `http://localhost:3000/google-oauth-success-redirect/${auth.access_token}/${auth.access_token}${req.params.from}`,
-    Redirect(
-      `http://localhost:5173/google-oauth-success-redirect/${auth.access_token}`,
+    // Redirect to front end login page, if there is no token
+    if (!access_token) {
+      res.redirect(`${process.env.BASE_FRONT_URL}/login`);
+    }
+
+    // Redirect to front end page - success auth
+    res.redirect(
+      `${process.env.BASE_FRONT_URL}/google-oauth-success-redirect/${access_token}`,
     );
   }
 }
