@@ -6,7 +6,9 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from './passport/local.strategy';
 import { JwtStrategy } from './passport/jwt.strategy';
+import { GoogleStrategy } from './passport/google.strategy';
 import { UserModule } from '../users/users.module';
+import { GoogleAuthController } from './auth.google-controller';
 
 @Module({
   imports: [
@@ -17,8 +19,8 @@ import { UserModule } from '../users/users.module';
       signOptions: { expiresIn: '24h' },
     }),
   ],
-  controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  controllers: [AuthController, GoogleAuthController],
+  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
