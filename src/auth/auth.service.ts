@@ -51,7 +51,10 @@ export class AuthService {
 
   async googleLogin(req) {
     if (!req?.user?.user) {
-      return 'No user from Google';
+      return {
+        access_token: null,
+        message: 'No user from Google',
+      };
     }
 
     // Get user data from Google

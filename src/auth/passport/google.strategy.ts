@@ -17,6 +17,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
   }
 
+  authenticate(req: any, options: any) {
+    if (!options?.state) {
+      options = { ...options, state: req.params.from };
+    }
+
+    return super.authenticate(req, options);
+  }
+
   async validate(
     accessToken: string,
     refreshToken: string,
