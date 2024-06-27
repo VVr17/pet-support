@@ -15,8 +15,7 @@ dotenv.config();
 
   // Enable CORS with configuration
   app.enableCors({
-    // origin: process.env.CORS_ORIGIN || '*',
-    origin: ['http://localhost:5173'],
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
