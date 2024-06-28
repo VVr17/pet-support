@@ -1,6 +1,6 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 
 @Controller('auth/google')
@@ -23,7 +23,7 @@ export class GoogleAuthController {
       res.redirect(`${process.env.BASE_FRONT_URL}/login`);
     }
 
-    // Redirect to front end page - success auth
+    // Redirect to front end page is case of success auth, providing access_token
     res.redirect(
       `${process.env.BASE_FRONT_URL}/google-oauth-success-redirect/${access_token}`,
     );

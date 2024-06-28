@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as bcrypt from 'bcryptjs';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -38,6 +37,7 @@ export class AuthService {
     };
   }
 
+  // Local-auth: email+password login
   login(user: AuthenticatedUser) {
     const payload = { email: user.email, sub: user.id };
     const { password, id, email, isAdmin, fullName } = user;
@@ -48,6 +48,7 @@ export class AuthService {
     };
   }
 
+  // Google Auth login
   async googleLogin(req) {
     if (!req?.user?.user) {
       return {
