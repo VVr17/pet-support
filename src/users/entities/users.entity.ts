@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import * as bcrypt from 'bcryptjs';
 import {
+  BeforeCreate,
+  BelongsToMany,
   Column,
   DataType,
   HasMany,
   Model,
   Table,
-  BelongsToMany,
-  BeforeCreate,
 } from 'sequelize-typescript';
 
 import { Favorites } from '../../favorites/entities/favorites.entity';
@@ -79,7 +79,7 @@ export class User extends Model<User> {
   @Column({
     allowNull: true,
     validate: {
-      is: /^\+380\d{9}$/,
+      is: /^\+?[1-9]\d{1,14}$/,
     },
   })
   phone: string;

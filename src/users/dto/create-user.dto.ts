@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
-  IsString,
+  IsDate,
   IsEmail,
   IsOptional,
+  IsString,
   Matches,
-  MinLength,
   MaxLength,
-  IsDate,
+  MinLength,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -60,8 +60,8 @@ export class CreateUserDto {
   @ApiProperty({ required: false, example: '+380991234567' })
   @IsOptional()
   @IsString()
-  @Matches(/^\+380\d{9}$/, {
-    message: 'Please provide a valid phone number in the format +380XXXXXXXXX',
+  @Matches(/^\+?[1-9]\d{1,14}$/, {
+    message: 'Please provide a valid phone number',
   })
   phone?: string;
 

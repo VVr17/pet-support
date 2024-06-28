@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { PartialType } from '@nestjs/mapped-types';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsDate,
   IsEmail,
@@ -10,8 +10,8 @@ import {
   MinLength,
 } from 'class-validator';
 
-import { CreateUserDto } from './create-user.dto';
 import { Type } from 'class-transformer';
+import { CreateUserDto } from './create-user.dto';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ example: 'email@gmail.com' })
@@ -50,8 +50,8 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ required: false, example: '+380991234567' })
   @IsOptional()
   @IsString()
-  @Matches(/^\+380\d{9}$/, {
-    message: 'Please provide a valid phone number in the format +380XXXXXXXXX',
+  @Matches(/^\+?[1-9]\d{1,14}$/, {
+    message: 'Please provide a valid phone number',
   })
   phone?: string;
 
