@@ -1,8 +1,10 @@
-import { AuthGuard } from '@nestjs/passport';
-import { AuthService } from './auth.service';
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiExcludeController } from '@nestjs/swagger';
 import { Response } from 'express';
+import { AuthService } from './auth.service';
 
+@ApiExcludeController()
 @Controller('auth/google')
 export class GoogleAuthController {
   constructor(private readonly authService: AuthService) {}
