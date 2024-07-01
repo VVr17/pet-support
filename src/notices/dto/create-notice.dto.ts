@@ -1,16 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
-  IsString,
+  IsDate,
   IsEnum,
   IsNotEmpty,
-  Matches,
-  MinLength,
-  IsOptional,
-  MaxLength,
-  IsUrl,
   IsNumber,
-  IsDate,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Matches,
+  MaxLength,
+  MinLength,
 } from 'class-validator';
 
 export class CreateNoticeDto {
@@ -77,4 +77,9 @@ export class CreateNoticeDto {
   @IsString()
   @IsNotEmpty()
   categoryId: string;
+
+  @ApiProperty({ example: '50196799-4205-4e5d-8ed5-573c2625ad17' })
+  @IsString()
+  @IsNotEmpty()
+  speciesId: string;
 }
