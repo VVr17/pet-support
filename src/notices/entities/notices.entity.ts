@@ -1,14 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  Column,
-  DataType,
-  Model,
-  Table,
-  ForeignKey,
   BelongsTo,
   BelongsToMany,
+  Column,
+  DataType,
+  ForeignKey,
+  Model,
+  Table,
 } from 'sequelize-typescript';
 
+import { Species } from 'src/species/entities/species.entity';
 import { Category } from '../../categories/entities/categories.entity';
 import { Favorites } from '../../favorites/entities/favorites.entity';
 import { User } from '../../users/entities/users.entity';
@@ -145,6 +146,14 @@ export class Notice extends Model<Notice> {
 
   @BelongsTo(() => Category, { foreignKey: 'categoryId' })
   category: Category;
+
+  // One-to-many: Species -> Notice
+  @ForeignKey(() => Species)
+  @Column({ field: 'Species_id', type: DataType.UUID, allowNull: false })
+  speciesId: string;
+
+  @BelongsTo(() => Species, { foreignKey: 'speciesId' })
+  species: Species;
 
   // One-to-many: User -> Notice
   @ForeignKey(() => User)

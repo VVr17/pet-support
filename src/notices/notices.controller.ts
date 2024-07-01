@@ -1,4 +1,16 @@
 import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -9,25 +21,13 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Query,
-  Put,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
 
-import { CreateNoticeDto } from './dto/create-notice.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CreateNoticeDto } from './dto/create-notice.dto';
+import { UpdateNoticeDto } from './dto/update-notice.dto';
+import { Notice } from './entities/notices.entity';
 import { IsMyNoticeGuard } from './guards/isMyNotice.guard';
 import { NoticesService } from './notices.service';
-import { Notice } from './entities/notices.entity';
-import { UpdateNoticeDto } from './dto/update-notice.dto';
 
 @ApiTags('Notices') // Swagger tags for API
 @Controller('notices')
@@ -53,16 +53,42 @@ export class NoticesController {
 
   // Get all notices
   @ApiOkResponse({ type: [Notice] })
-  @ApiQuery({ name: 'category', required: false })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'sort', required: false })
+  @ApiQuery({
+    name: 'sortType',
+    required: false,
+    enum: ['ascending', 'descending'],
+  })
+  @ApiQuery({ name: 'category', required: false })
+  @ApiQuery({ name: 'species', required: false })
+  @ApiQuery({ name: 'sex', required: false })
+  @ApiQuery({ name: 'priceMin', required: false })
+  @ApiQuery({ name: 'priceMax', required: false })
   @Get()
   async findNotices(
     @Query('category') category: string = null,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
+    @Query('sort') sort: string = 'createdAt', // Default sorting by createdAt
+    @Query('sortType') sortType: 'ASC' | 'DESC' = 'DESC', // Default sortType descending
+    @Query('sex') sex: 'male' | 'female' = null,
+    @Query('species') species: string = null,
+    @Query('priceMin') priceMin: number = null,
+    @Query('priceMax') priceMax: number = null,
   ) {
-    return await this.noticesService.findAll(category, +page, +limit);
+    return await this.noticesService.findAll({
+      categoryId: category,
+      page: +page,
+      limit: +limit,
+      sort,
+      sortType,
+      sex,
+      speciesId: species,
+      priceMin,
+      priceMax,
+    });
   }
 
   // Get notice by Id

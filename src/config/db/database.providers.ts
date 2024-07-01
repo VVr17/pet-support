@@ -2,10 +2,11 @@ import * as dotenv from 'dotenv';
 import { Sequelize } from 'sequelize-typescript';
 
 import { Category } from 'src/categories/entities/categories.entity';
-import { Notice } from 'src/notices/entities/notices.entity';
-import { User } from 'src/users/entities/users.entity';
-import { Pet } from 'src/pets/entities/pets.entity';
 import { Favorites } from 'src/favorites/entities/favorites.entity';
+import { Notice } from 'src/notices/entities/notices.entity';
+import { Pet } from 'src/pets/entities/pets.entity';
+import { Species } from 'src/species/entities/species.entity';
+import { User } from 'src/users/entities/users.entity';
 
 dotenv.config();
 
@@ -28,7 +29,7 @@ export const databaseProviders = [
         },
       });
 
-      sequelize.addModels([User, Notice, Pet, Category, Favorites]);
+      sequelize.addModels([User, Notice, Pet, Category, Favorites, Species]);
       await sequelize.sync({ alter: true }); // Creates a table if it doesn't exist and adds what was changed
       return sequelize;
     },

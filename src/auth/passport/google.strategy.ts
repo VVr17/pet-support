@@ -1,11 +1,12 @@
-import * as dotenv from 'dotenv';
-import { AuthService } from '../auth.service';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
+import * as dotenv from 'dotenv';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
+import { AuthService } from '../auth.service';
 
 dotenv.config();
 
+// Google OAuth Strategy Provider
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(private authService: AuthService) {

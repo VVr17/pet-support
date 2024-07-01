@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Op } from 'sequelize';
 
 import { Category } from 'src/categories/entities/categories.entity';
-import { CreateNoticeDto } from './dto/create-notice.dto';
-import { Notice } from './entities/notices.entity';
-import { UpdateNoticeDto } from './dto/update-notice.dto';
+import { Species } from 'src/species/entities/species.entity';
 import { User } from 'src/users/entities/users.entity';
+import { CreateNoticeDto } from './dto/create-notice.dto';
+import { UpdateNoticeDto } from './dto/update-notice.dto';
+import { Notice } from './entities/notices.entity';
 
 @Injectable()
 export class NoticesService {
@@ -25,8 +28,54 @@ export class NoticesService {
     };
   }
 
-  async findAll(categoryId: string | null, page: number, limit: number) {
-    const whereClause = categoryId ? { categoryId } : {};
+  async findAll({
+    page,
+    limit,
+    sort,
+    sortType,
+    categoryId,
+    speciesId,
+    sex,
+    priceMin,
+    priceMax,
+  }: {
+    page: number;
+    limit: number;
+    sort: string;
+    sortType: 'ASC' | 'DESC';
+    categoryId: string | null;
+    speciesId: string;
+    sex: 'male' | 'female' | null;
+    priceMin: number;
+    priceMax: number;
+  }) {
+    // Category filter
+    const whereClause: any = categoryId ? { categoryId } : {};
+
+    // Sex filter
+    if (sex) {
+      whereClause.sex = sex;
+    }
+
+    // Species filter
+    if (speciesId) {
+      whereClause.speciesId = speciesId;
+    }
+
+    // Price filter
+    if (priceMin && priceMax) {
+      whereClause.price = {
+        [Op.between]: [priceMin, priceMax],
+      };
+    } else if (priceMin) {
+      whereClause.price = {
+        [Op.gte]: priceMin,
+      };
+    } else if (priceMax) {
+      whereClause.price = {
+        [Op.lte]: priceMax,
+      };
+    }
 
     // Find total count of notices
     const total = await this.noticesRepository.count({ where: whereClause });
@@ -44,10 +93,15 @@ export class NoticesService {
           model: Category,
           attributes: { exclude: ['updatedAt', 'createdAt', 'slug'] },
         },
+        {
+          model: Species,
+          attributes: { exclude: ['updatedAt', 'createdAt', 'slug'] },
+        },
       ],
       attributes: {
-        exclude: ['updatedAt', 'createdAt', 'ownerId', 'categoryId'],
+        exclude: ['updatedAt', 'ownerId', 'categoryId'],
       },
+      order: [[sort, sortType]],
       offset: (page - 1) * limit, // Calculate offset based on page number
       limit: limit, // Set limit to the specified limit
     });
@@ -72,6 +126,10 @@ export class NoticesService {
           attributes: {
             exclude: ['updatedAt', 'createdAt', 'slug'],
           },
+        },
+        {
+          model: Species,
+          attributes: { exclude: ['updatedAt', 'createdAt', 'slug'] },
         },
       ],
       attributes: {
