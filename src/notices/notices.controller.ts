@@ -59,11 +59,11 @@ export class NoticesController {
   @ApiQuery({
     name: 'sortType',
     required: false,
-    enum: ['ascending', 'descending'],
+    enum: ['ASC', 'DESC'],
   })
   @ApiQuery({ name: 'category', required: false })
   @ApiQuery({ name: 'species', required: false })
-  @ApiQuery({ name: 'sex', required: false })
+  @ApiQuery({ name: 'sex', required: false, enum: ['male', 'female'] })
   @ApiQuery({ name: 'priceMin', required: false })
   @ApiQuery({ name: 'priceMax', required: false })
   @Get()
