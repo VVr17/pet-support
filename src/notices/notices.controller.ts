@@ -63,7 +63,7 @@ export class NoticesController {
   })
   @ApiQuery({ name: 'category', required: false })
   @ApiQuery({ name: 'species', required: false })
-  @ApiQuery({ name: 'sex', required: false, enum: ['male', 'female'] })
+  @ApiQuery({ name: 'gender', required: false, enum: ['male', 'female'] })
   @ApiQuery({ name: 'priceMin', required: false })
   @ApiQuery({ name: 'priceMax', required: false })
   @Get()
@@ -73,7 +73,7 @@ export class NoticesController {
     @Query('limit') limit: number = 10,
     @Query('sort') sort: string = 'createdAt', // Default sorting by createdAt
     @Query('sortType') sortType: 'ASC' | 'DESC' = 'DESC', // Default sortType descending
-    @Query('sex') sex: 'male' | 'female' = null,
+    @Query('gender') gender: 'male' | 'female' = null,
     @Query('species') species: string = null,
     @Query('priceMin') priceMin: number = null,
     @Query('priceMax') priceMax: number = null,
@@ -84,7 +84,7 @@ export class NoticesController {
       limit: +limit,
       sort,
       sortType,
-      sex,
+      gender,
       speciesId: species,
       priceMin,
       priceMax,

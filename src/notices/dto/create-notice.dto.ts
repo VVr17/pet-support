@@ -45,7 +45,7 @@ export class CreateNoticeDto {
 
   @ApiProperty({ enum: ['male', 'female'], example: 'female' })
   @IsEnum(['male', 'female'])
-  sex: 'male' | 'female';
+  gender: 'male' | 'female';
 
   @ApiProperty({ required: false, example: '2021-11-20T00:00:00Z' })
   @IsOptional()

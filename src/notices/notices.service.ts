@@ -35,7 +35,7 @@ export class NoticesService {
     sortType,
     categoryId,
     speciesId,
-    sex,
+    gender,
     priceMin,
     priceMax,
   }: {
@@ -45,16 +45,16 @@ export class NoticesService {
     sortType: 'ASC' | 'DESC';
     categoryId: string | null;
     speciesId: string;
-    sex: 'male' | 'female' | null;
+    gender: 'male' | 'female' | null;
     priceMin: number;
     priceMax: number;
   }) {
     // Category filter
     const whereClause: any = categoryId ? { categoryId } : {};
 
-    // Sex filter
-    if (sex) {
-      whereClause.sex = sex;
+    // gender filter
+    if (gender) {
+      whereClause.gender = gender;
     }
 
     // Species filter

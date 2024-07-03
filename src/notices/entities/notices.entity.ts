@@ -89,12 +89,12 @@ export class Notice extends Model<Notice> {
     validate: {
       isIn: {
         args: [['male', 'female']],
-        msg: 'Sex must be either "male" or "female"',
+        msg: 'Gender must be either "male" or "female"',
       },
-      notNull: { msg: 'Sex is required' },
+      notNull: { msg: 'Gender is required' },
     },
   })
-  sex: string;
+  gender: string;
 
   @ApiProperty({ example: '1990-11-20T00:00:00Z', required: false })
   @Column({
