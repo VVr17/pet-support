@@ -1,6 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
-import { User } from 'src/users/entities/users.entity';
 import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
 import { Pet } from './entities/pets.entity';
@@ -28,20 +27,13 @@ export class PetsService {
 
   async findById(id: string) {
     const pet = await this.petsRepository.findByPk(id, {
-      include: [
-        {
-          model: User,
-          as: 'Owner',
-          attributes: ['email', 'phone'],
-        },
-      ],
       attributes: {
         exclude: ['updatedAt', 'createdAt', 'ownerId'],
       },
     });
 
     if (!pet) {
-      throw new NotFoundException(`Notice with ID ${id} not found`);
+      throw new NotFoundException(`Pet with ID ${id} not found`);
     }
 
     return { message: 'Pet has been successfully found', data: pet };
