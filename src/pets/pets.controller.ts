@@ -1,12 +1,13 @@
 import {
-  Controller,
-  Post,
   Body,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  Param,
+  Post,
   Put,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -18,12 +19,12 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
-import { CreatePetDto } from './dto/create-pet.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CreatePetDto } from './dto/create-pet.dto';
+import { UpdatePetDto } from './dto/update-pet.dto';
+import { Pet } from './entities/pets.entity';
 import { IsMyPetGuard } from './guards/isMyPet.guard';
 import { PetsService } from './pets.service';
-import { Pet } from './entities/pets.entity';
-import { UpdatePetDto } from './dto/update-pet.dto';
 
 @ApiTags('Pets') // Swagger tag for API
 @UseGuards(JwtAuthGuard)
@@ -32,6 +33,21 @@ import { UpdatePetDto } from './dto/update-pet.dto';
 @Controller('pets')
 export class PetsController {
   constructor(private readonly petsService: PetsService) {}
+
+  // Get pet by Id
+  @ApiOkResponse({
+    description: 'The pet has been successfully found.',
+    type: Pet,
+  })
+  @ApiNotFoundResponse({
+    description: 'Not found',
+  })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @UseGuards(IsMyPetGuard)
+  @Get(':id')
+  async findNoticeById(@Param('id') id: string) {
+    return await this.petsService.findById(id);
+  }
 
   // Add new pet
   @ApiCreatedResponse({

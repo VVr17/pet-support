@@ -1,8 +1,9 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
+import { User } from 'src/users/entities/users.entity';
 import { CreatePetDto } from './dto/create-pet.dto';
-import { Pet } from './entities/pets.entity';
 import { UpdatePetDto } from './dto/update-pet.dto';
+import { Pet } from './entities/pets.entity';
 
 @Injectable()
 export class PetsService {
@@ -10,6 +11,41 @@ export class PetsService {
     @Inject('PETS_REPOSITORY')
     private petsRepository: typeof Pet,
   ) {}
+
+  async findPetsByUserId(id: string) {
+    const pets = await this.petsRepository.findAll({
+      where: { ownerId: id },
+      attributes: {
+        exclude: ['updatedAt', 'createdAt', 'ownerId'],
+      },
+    });
+
+    return {
+      message: 'Success',
+      data: pets,
+    };
+  }
+
+  async findById(id: string) {
+    const pet = await this.petsRepository.findByPk(id, {
+      include: [
+        {
+          model: User,
+          as: 'Owner',
+          attributes: ['email', 'phone'],
+        },
+      ],
+      attributes: {
+        exclude: ['updatedAt', 'createdAt', 'ownerId'],
+      },
+    });
+
+    if (!pet) {
+      throw new NotFoundException(`Notice with ID ${id} not found`);
+    }
+
+    return { message: 'Pet has been successfully found', data: pet };
+  }
 
   async create(createPetDto: CreatePetDto, userId: string) {
     const newPet = await this.petsRepository.create({
@@ -48,19 +84,5 @@ export class PetsService {
     await this.petsRepository.destroy({ where: { id } });
 
     return { message: `Pet ${id} has been deleted successfully` };
-  }
-
-  async findPetsByUserId(id: string) {
-    const pets = await this.petsRepository.findAll({
-      where: { ownerId: id },
-      attributes: {
-        exclude: ['updatedAt', 'createdAt', 'ownerId'],
-      },
-    });
-
-    return {
-      message: 'Success',
-      data: pets,
-    };
   }
 }
